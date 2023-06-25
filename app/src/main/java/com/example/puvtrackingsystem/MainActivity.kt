@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity() {
 
         requestLocationPermissions()
 
-//        requestLocation()
-
         puvArrivalBtn = findViewById(R.id.puv_arrival_btn)
         puvArrivalBtn.setOnClickListener {
             Intent(this, PUVDetailsActivity::class.java).also {

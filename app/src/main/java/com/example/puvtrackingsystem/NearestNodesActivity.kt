@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -31,6 +30,8 @@ class NearestNodesActivity : AppCompatActivity() {
     private var nearestStop: StopNode? = null
     private var nearestStopName: String? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationScheduler: Handler
+    private lateinit var puvDataScheduler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,28 +47,34 @@ class NearestNodesActivity : AppCompatActivity() {
         schedulePUVDataUpdates()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        locationScheduler.removeCallbacksAndMessages(null)
+        puvDataScheduler.removeCallbacksAndMessages(null)
+    }
+
     private fun scheduleLocationUpdates() {
-        val handler  = Handler(Looper.getMainLooper())
+        locationScheduler  = Handler(Looper.getMainLooper())
         val runnable = object: Runnable {
             override fun run() {
                 requestLocation()
-                handler.postDelayed(this, 5_000)
+                locationScheduler.postDelayed(this, 5_000)
             }
         }
 
-        handler.postDelayed(runnable, 10)
+        locationScheduler.postDelayed(runnable, 10)
     }
 
     private fun schedulePUVDataUpdates() {
-        val handler  = Handler(Looper.getMainLooper())
+        puvDataScheduler  = Handler(Looper.getMainLooper())
         val runnable = object: Runnable {
             override fun run() {
                 getPUVData()
-                handler.postDelayed(this, 20_000)
+                puvDataScheduler.postDelayed(this, 20_000)
             }
         }
 
-        handler.postDelayed(runnable, 10)
+        puvDataScheduler.postDelayed(runnable, 10)
     }
 
     private fun requestLocation() {
@@ -129,23 +136,39 @@ class NearestNodesActivity : AppCompatActivity() {
     }
 
     private fun getBufferTimes() {
-        HttpGetRequestAsyncTask { response ->
-            val type = Array<BufferTime>::class.java
-            val data = Gson().fromJson(response, type)
-            bufferTimes = data
+        HttpGetRequestAsyncTask(
+            callback = { response ->
+                val type = Array<BufferTime>::class.java
+                val data = Gson().fromJson(response, type)
+                bufferTimes = data
 
-            updateDetails()
-        }.execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getBufferTimes")
+                updateDetails()
+            },
+            errorHandler = {
+                showConnectionErrorToast()
+            }
+        ).execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getBufferTimes")
     }
 
     private fun getPUVData() {
-        HttpGetRequestAsyncTask { response ->
-            val type = Array<PUV>::class.java
-            val data = Gson().fromJson(response, type)
+        HttpGetRequestAsyncTask(
+            callback = { response ->
+                val type = Array<PUV>::class.java
+                val data = Gson().fromJson(response, type)
 
-            puvs = data
+                puvs = data
 
-            updateDetails()
-        }.execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getPUVSummary")
+                updateDetails()
+            },
+            errorHandler = {
+                showConnectionErrorToast()
+            }
+        ).execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getPUVSummary")
+    }
+
+    private fun showConnectionErrorToast() {
+        Toast
+            .makeText(this, "Could not connect to the internet.", Toast.LENGTH_LONG)
+            .show()
     }
 }

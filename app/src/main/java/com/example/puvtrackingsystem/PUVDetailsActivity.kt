@@ -10,6 +10,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.constants.getStopNodes
@@ -28,6 +29,7 @@ class PUVDetailsActivity : AppCompatActivity() {
     private var bufferTimes: Array<BufferTime>? = null
     private var puvs: Array<PUV>? = null
     private var currentStopNode: String = "Ambiong"
+    private lateinit var puvDataScheduler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,15 +106,15 @@ class PUVDetailsActivity : AppCompatActivity() {
     }
 
     private fun schedulePUVDataUpdates() {
-        val handler  = Handler(Looper.getMainLooper())
+        puvDataScheduler  = Handler(Looper.getMainLooper())
         val runnable = object: Runnable {
             override fun run() {
                 getPUVData()
-                handler.postDelayed(this, 20_000)
+                puvDataScheduler.postDelayed(this, 20_000)
             }
         }
 
-        handler.postDelayed(runnable, 10)
+        puvDataScheduler.postDelayed(runnable, 10)
     }
 
     private fun updatePUVDetails() {
@@ -129,28 +131,44 @@ class PUVDetailsActivity : AppCompatActivity() {
     }
 
     private fun getBufferTimes() {
-        HttpGetRequestAsyncTask { response ->
-            val type = Array<BufferTime>::class.java
-            val data = Gson().fromJson(response, type)
-            bufferTimes = data
+        HttpGetRequestAsyncTask(
+            callback = { response ->
+                var type = Array<BufferTime>::class.java
+                val data = Gson().fromJson(response, type)
+                bufferTimes = data
 
-            updatePUVDetails()
-        }.execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getBufferTimes")
+                updatePUVDetails()
+            },
+            errorHandler = {
+                showConnectionErrorToast()
+            }
+        ).execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getBufferTimes")
     }
 
     private fun getPUVData() {
-        HttpGetRequestAsyncTask { response ->
-            val type = Array<PUV>::class.java
-            val data = Gson().fromJson(response, type)
+        HttpGetRequestAsyncTask(
+            callback = { response ->
+                val type = Array<PUV>::class.java
+                val data = Gson().fromJson(response, type)
 
-            puvs = data
-            when (puv) {
-                "PUV1" -> currentPuv = puvs!![0]
-                "PUV2" -> currentPuv = puvs!![1]
-                "PUV3" -> currentPuv = puvs!![2]
+                puvs = data
+                when (puv) {
+                    "PUV1" -> currentPuv = puvs!![0]
+                    "PUV2" -> currentPuv = puvs!![1]
+                    "PUV3" -> currentPuv = puvs!![2]
+                }
+
+                updatePUVDetails()
+            },
+            errorHandler = {
+                showConnectionErrorToast()
             }
+        ).execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getPUVSummary")
+    }
 
-            updatePUVDetails()
-        }.execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getPUVSummary")
+    private fun showConnectionErrorToast() {
+        Toast
+            .makeText(this, "Could not connect to the internet.", Toast.LENGTH_LONG)
+            .show()
     }
 }

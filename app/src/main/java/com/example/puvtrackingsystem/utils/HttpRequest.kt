@@ -4,7 +4,10 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
-class HttpGetRequestAsyncTask(private val callback: (String) -> Unit) :
+class HttpGetRequestAsyncTask(
+    private val callback: (String) -> Unit,
+    private val errorHandler: (() -> Unit)? = null
+) :
     AsyncTask<String, Void, String>() {
 
     override fun doInBackground(vararg params: String): String {
@@ -16,30 +19,37 @@ class HttpGetRequestAsyncTask(private val callback: (String) -> Unit) :
         connection.readTimeout = 5000
         connection.connectTimeout = 5000
 
-        connection.connect()
+        try {
+            connection.connect()
 
-        val responseCode = connection.responseCode
-        val responseBody = StringBuilder()
+            val responseCode = connection.responseCode
+            val responseBody = StringBuilder()
 
-        if (responseCode == HttpURLConnection.HTTP_OK) {
-            val inputStreamReader = InputStreamReader(connection.inputStream)
-            val bufferedReader = BufferedReader(inputStreamReader)
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                val inputStreamReader = InputStreamReader(connection.inputStream)
+                val bufferedReader = BufferedReader(inputStreamReader)
 
-            var line: String? = bufferedReader.readLine()
-            while (line != null) {
-                responseBody.append(line)
-                line = bufferedReader.readLine()
+                var line: String? = bufferedReader.readLine()
+                while (line != null) {
+                    responseBody.append(line)
+                    line = bufferedReader.readLine()
+                }
+
+                bufferedReader.close()
             }
 
-            bufferedReader.close()
+            connection.disconnect()
+            return responseBody.toString()
+        } catch (e: Exception) {
+            return "Error"
         }
-
-        connection.disconnect()
-
-        return responseBody.toString()
     }
 
     override fun onPostExecute(result: String) {
-        callback(result)
+        if (result == "Error") {
+            errorHandler?.let { it() }
+        } else {
+            callback(result)
+        }
     }
 }
