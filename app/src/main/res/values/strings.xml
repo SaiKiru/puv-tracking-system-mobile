@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">PUV Tracking System</string>
+
+    <string-array name="stop_nodes">
+        <item>Ambiong</item>
+        <item>Dona Manuela School</item>
+        <item>Police Station Crossing</item>
+        <item>Bayan Park (Brookspoint)</item>
+        <item>Crossing - Leonila Hill</item>
+        <item>Crossing - Jacob Store</item>
+        <item>Crossing - Ledesma</item>
+        <item>Crossing - Malvar Waiting Shed</item>
+        <item>Crossing - Bugallon, Floresca</item>
+        <item>Crossing - Rimando</item>
+        <item>Crossing - Upper Brookside</item>
+        <item>Crossing - 7/11 Rimando</item>
+        <item>Crossing - Church of Christ</item>
+        <item>SLU</item>
+        <item>Baguio Market</item>
+        <item>Igorot Garden</item>
+        <item>Jadewell</item>
+        <item>SM - Parking</item>
+        <item>SM - Main</item>
+        <item>UC Overpass</item>
+        <item>Patriotic</item>
+        <item>Tiongsan</item>
+        <item>Malcolm Square</item>
+        <item>Centermall</item>
+    </string-array>
+
+    <string-array name="puvs">
+        <item>PUV 1</item>
+        <item>PUV 2</item>
+        <item>PUV 3</item>
+    </string-array>
+</resources>
