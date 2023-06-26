@@ -17,8 +17,14 @@ import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.classes.StopNode
 import com.example.puvtrackingsystem.constants.getStopNodes
 import com.example.puvtrackingsystem.utils.calculateTravelTime
+import com.example.puvtrackingsystem.utils.isLocationEnabled
+import com.example.puvtrackingsystem.utils.requestEnableLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.OnTokenCanceledListener
 import com.google.gson.Gson
 import java.util.Calendar
 
@@ -82,7 +88,18 @@ class NearestNodesActivity : AppCompatActivity() {
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
         ) return
 
-        fusedLocationClient.lastLocation
+        if (!isLocationEnabled(this)) {
+            requestEnableLocation(this)
+            finish()
+            return
+        }
+
+        fusedLocationClient
+            .getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
+                override fun onCanceledRequested(p0: OnTokenCanceledListener) = CancellationTokenSource().token
+
+                override fun isCancellationRequested() = false
+            })
             .addOnSuccessListener { location: Location? ->
                 if (location == null) {
                     Toast
