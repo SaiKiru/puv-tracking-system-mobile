@@ -15,7 +15,7 @@ import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.Coordinates
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.classes.StopNode
-import com.example.puvtrackingsystem.constants.getStopNodes
+import com.example.puvtrackingsystem.utils.API
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import com.example.puvtrackingsystem.utils.isLocationEnabled
 import com.example.puvtrackingsystem.utils.requestEnableLocation
@@ -153,7 +153,7 @@ class NearestNodesActivity : AppCompatActivity() {
     }
 
     private fun getBufferTimes() {
-        HttpGetRequestAsyncTask(
+        API.getBufferTimes(
             callback = { response ->
                 val type = Array<BufferTime>::class.java
                 val data = Gson().fromJson(response, type)
@@ -164,11 +164,11 @@ class NearestNodesActivity : AppCompatActivity() {
             errorHandler = {
                 showConnectionErrorToast()
             }
-        ).execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getBufferTimes")
+        )
     }
 
     private fun getPUVData() {
-        HttpGetRequestAsyncTask(
+        API.getPUVSummary(
             callback = { response ->
                 val type = Array<PUV>::class.java
                 val data = Gson().fromJson(response, type)
@@ -180,7 +180,7 @@ class NearestNodesActivity : AppCompatActivity() {
             errorHandler = {
                 showConnectionErrorToast()
             }
-        ).execute("https://script.google.com/macros/s/AKfycbwxvuUBkTmxkQcjLxvFmdfcfpwBNnCtVpAcNrQLwhOmarXORfxM05HpAExU_x9cVeQQ/exec?action=getPUVSummary")
+        )
     }
 
     private fun showConnectionErrorToast() {
