@@ -18,7 +18,7 @@ import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.Coordinates
 import com.example.puvtrackingsystem.classes.Map
 import com.example.puvtrackingsystem.classes.PUV
-import com.example.puvtrackingsystem.utils.API
+import com.example.puvtrackingsystem.classes.API
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import com.example.puvtrackingsystem.utils.isLocationEnabled
 import com.example.puvtrackingsystem.utils.requestEnableLocation

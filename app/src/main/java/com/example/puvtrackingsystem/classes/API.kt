@@ -1,4 +1,4 @@
-package com.example.puvtrackingsystem.utils
+package com.example.puvtrackingsystem.classes
 
 import HttpGetRequestAsyncTask
 
@@ -10,7 +10,7 @@ object API {
         errorHandler: (() -> Unit)? = null
     ) {
         HttpGetRequestAsyncTask(callback, errorHandler)
-            .execute("${BASE_URL}?action=getAllPUVData")
+            .execute("$BASE_URL?action=getAllPUVData")
     }
 
     fun getBufferTimes(
@@ -18,7 +18,7 @@ object API {
         errorHandler: (() -> Unit)? = null
     ) {
         HttpGetRequestAsyncTask(callback, errorHandler)
-            .execute("${BASE_URL}?action=getBufferTimes")
+            .execute("$BASE_URL?action=getBufferTimes")
     }
 
     fun getPUVSummary(
@@ -26,7 +26,7 @@ object API {
         errorHandler: (() -> Unit)? = null
     ) {
         HttpGetRequestAsyncTask(callback, errorHandler)
-            .execute("${BASE_URL}?action=getPUVSummary")
+            .execute("$BASE_URL?action=getPUVSummary")
     }
 
     fun getStopNodeStats(
@@ -35,6 +35,6 @@ object API {
         errorHandler: (() -> Unit)? = null
     ) {
         HttpGetRequestAsyncTask(callback, errorHandler)
-            .execute("${BASE_URL}?action=getStopNodeStats&stopName=${stopName}")
+            .execute("$BASE_URL?action=getStopNodeStats&stopName=${stopName}")
     }
 }
