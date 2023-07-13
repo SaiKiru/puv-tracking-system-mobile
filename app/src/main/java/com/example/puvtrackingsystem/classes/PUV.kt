@@ -1,5 +1,6 @@
 package com.example.puvtrackingsystem.classes
 
+import com.example.puvtrackingsystem.utils.calculateTravelTime
 import java.util.Calendar
 import java.util.Date
 
@@ -17,8 +18,9 @@ class PUV(
     val nextStop: Int = 1,
     val node: String = "",
 ) {
-    lateinit var coordinates: Coordinates
-    lateinit var dateTime: Date
+    var coordinates: Coordinates
+    var dateTime: Date
+    var nextIdx = nextStop - 1
     
     init {
         val calendar = Calendar.getInstance()
@@ -36,7 +38,7 @@ class PUV(
             (this.coordinates.longitude + puv.coordinates.longitude) / 2
         )
 
-        val averageSpeed = (this.speed + puv.speed) / 2;
+        val averageSpeed = (this.speed + puv.speed) / 2
 
         return PUV(
             "${this.dateTime.hours}:${this.dateTime.minutes}",
@@ -49,6 +51,26 @@ class PUV(
             puv.boardingCount,
             puv.alightingCount,
             puv.passengersOnboard,
-        );
+        )
+    }
+
+    fun getLastNode(): StopNode {
+        var lastIdx = (nextStop - 1) - 1
+
+        if (lastIdx < 0) {
+            lastIdx = Map.routes.size - 1
+        }
+
+        return Map.routes[lastIdx]
+    }
+
+    fun getNextNode(): StopNode {
+        return Map.routes[nextIdx]
+    }
+
+    fun getTimeToNextNode(): Double {
+        val distance = Map.measurePUVDistance(this, nextIdx)
+
+        return calculateTravelTime(distance, this.speed)
     }
 }
