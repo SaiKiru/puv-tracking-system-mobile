@@ -5,7 +5,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class HttpGetRequestAsyncTask(
-    private val callback: (String) -> Unit,
+    private val callback: ((String) -> Unit)? = null,
     private val errorHandler: (() -> Unit)? = null
 ) :
     AsyncTask<String, Void, String>() {
@@ -49,7 +49,9 @@ class HttpGetRequestAsyncTask(
         if (result == "Error") {
             errorHandler?.let { it() }
         } else {
-            callback(result)
+            callback?.let {
+                it(result)
+            }
         }
     }
 }
