@@ -13,7 +13,9 @@ class PUV(
     year: Int,
     val boardingCount: Int,
     val alightingCount: Int,
-    val passengersOnboard: Int
+    val passengersOnboard: Int,
+    val nextStop: Int = 1,
+    val node: String = "",
 ) {
     lateinit var coordinates: Coordinates
     lateinit var dateTime: Date
