@@ -1,6 +1,5 @@
 package com.example.puvtrackingsystem
 
-import HttpGetRequestAsyncTask
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
@@ -17,9 +16,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.Coordinates
+import com.example.puvtrackingsystem.classes.Map
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.utils.API
-import com.example.puvtrackingsystem.utils.calculateDistance
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import com.example.puvtrackingsystem.utils.isLocationEnabled
 import com.example.puvtrackingsystem.utils.requestEnableLocation
@@ -43,7 +42,7 @@ class PUVDetailsActivity : AppCompatActivity() {
     private var bufferTimes: Array<BufferTime>? = null
     private var puvs: Array<PUV>? = null
     private var currentLocation: Coordinates? = null
-    private var currentStopNode: String = "Ambiong"
+    private var currentStopNode: Int = 0
     private lateinit var puvDataScheduler: Handler
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var puvHasInitialized = false
@@ -57,7 +56,7 @@ class PUVDetailsActivity : AppCompatActivity() {
         passengersTV = findViewById(R.id.passengers_tv)
         etaTV = findViewById(R.id.eta_tv)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         ArrayAdapter.createFromResource(
             this,
@@ -114,8 +113,7 @@ class PUVDetailsActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                val selectedValue = parent?.getItemAtPosition(position).toString()
-                currentStopNode = selectedValue
+                currentStopNode = position
                 updatePUVDetails()
             }
 
@@ -150,7 +148,7 @@ class PUVDetailsActivity : AppCompatActivity() {
                         .makeText(this, "Could not get location. Turn on location services and internet :)", Toast.LENGTH_LONG)
                         .show()
                     return@addOnSuccessListener
-                };
+                }
 
                 currentLocation = Coordinates(location.latitude, location.longitude)
                 updatePUVDetails()
@@ -198,7 +196,7 @@ class PUVDetailsActivity : AppCompatActivity() {
         val cal = Calendar.getInstance()
         val currentHour = cal.get(Calendar.HOUR_OF_DAY)
         val bufferTime = bufferTimes!![(currentHour + 23) % 24]
-        val distance = currentPuv!!.coordinates.distanceTo(getStopNodes()[currentStopNode]!!.coordinates)
+        val distance = currentPuv!!.coordinates.distanceTo(Map.routes[currentStopNode].coordinates)
         val expectedTime = calculateTravelTime(distance, currentPuv!!.speed) + bufferTime.value * 0.1
 
         passengersTV.text = currentPuv!!.passengersOnboard.toString()

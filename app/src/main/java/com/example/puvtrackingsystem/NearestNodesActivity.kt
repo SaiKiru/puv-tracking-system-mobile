@@ -1,6 +1,5 @@
 package com.example.puvtrackingsystem
 
-import HttpGetRequestAsyncTask
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
@@ -13,6 +12,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.Coordinates
+import com.example.puvtrackingsystem.classes.Map
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.classes.StopNode
 import com.example.puvtrackingsystem.utils.API
@@ -34,7 +34,6 @@ class NearestNodesActivity : AppCompatActivity() {
     private var bufferTimes: Array<BufferTime>? = null
     private var puvs: Array<PUV>? = null
     private var nearestStop: StopNode? = null
-    private var nearestStopName: String? = null
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationScheduler: Handler
     private lateinit var puvDataScheduler: Handler
@@ -46,7 +45,7 @@ class NearestNodesActivity : AppCompatActivity() {
         nearestStopTV = findViewById(R.id.nearest_stop_tv)
         nearestEtaTV = findViewById(R.id.nearest_eta_tv)
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         getBufferTimes()
         scheduleLocationUpdates()
@@ -106,21 +105,19 @@ class NearestNodesActivity : AppCompatActivity() {
                         .makeText(this, "Could not get location. Turn on location services and internet :)", Toast.LENGTH_LONG)
                         .show()
                     return@addOnSuccessListener
-                };
+                }
 
                 val currentLocation = Coordinates(location.latitude, location.longitude)
-                var nearestStop = getStopNodes().values.first()
-                nearestStopName = getStopNodes().keys.first()
+                var nearestStop = Map.routes.first()
                 var nearestDistance = currentLocation.distanceTo(nearestStop.coordinates)
 
-                for (i in 1 until getStopNodes().values.size) {
-                    val stopNode = getStopNodes().values.toList()[i]
+                for (i in 1 until Map.routes.size) {
+                    val stopNode = Map.routes[i]
 
                     val currentEvaluated = currentLocation.distanceTo(stopNode.coordinates)
                     if (currentEvaluated < nearestDistance) {
                         nearestStop = stopNode
                         nearestDistance = currentEvaluated
-                        nearestStopName = getStopNodes().keys.toList()[i]
                     }
                 }
 
@@ -134,7 +131,7 @@ class NearestNodesActivity : AppCompatActivity() {
         val cal = Calendar.getInstance()
         val currentHour = cal.get(Calendar.HOUR_OF_DAY)
         val bufferTime = bufferTimes!![(currentHour + 23) % 24]
-        var nearestPUV: PUV = puvs!![0];
+        var nearestPUV: PUV = puvs!![0]
         var expectedTime = calculateTravelTime(nearestPUV.coordinates.distanceTo(nearestStop!!.coordinates), nearestPUV.speed) + bufferTime.value * 0.1
 
         for (i in 1 until puvs!!.size) {
@@ -148,7 +145,7 @@ class NearestNodesActivity : AppCompatActivity() {
             }
         }
 
-        nearestStopTV.text = nearestStopName
+        nearestStopTV.text = nearestStop!!.name
         nearestEtaTV.text = "${(expectedTime * 60).toInt()} minutes"
     }
 

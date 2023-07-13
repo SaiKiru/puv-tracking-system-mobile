@@ -1,7 +1,11 @@
 package com.example.puvtrackingsystem.classes
 
-class StopNode(latitude: Double, longitude: Double) {
-    lateinit var coordinates: Coordinates
+class StopNode(
+    var name: String,
+    latitude: Double,
+    longitude: Double
+) {
+    var coordinates: Coordinates
 
     init {
         this.coordinates = Coordinates(latitude, longitude)
