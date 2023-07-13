@@ -14,7 +14,7 @@ object API {
     }
 
     fun getBufferTimes(
-        callback: (String) -> Unit,
+        callback: ((String) -> Unit)? = null,
         errorHandler: (() -> Unit)? = null
     ) {
         HttpGetRequestAsyncTask(callback, errorHandler)
@@ -31,7 +31,7 @@ object API {
 
     fun getStopNodeStats(
         stopName: String,
-        callback: (String) -> Unit,
+        callback: ((String) -> Unit)? = null,
         errorHandler: (() -> Unit)? = null
     ) {
         HttpGetRequestAsyncTask(callback, errorHandler)
