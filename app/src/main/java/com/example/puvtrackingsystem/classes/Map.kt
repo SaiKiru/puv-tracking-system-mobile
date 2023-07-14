@@ -44,6 +44,30 @@ object Map {
         }
     }
 
+    fun getTownStops(start: Int = 0): List<String> {
+        var idx = start
+
+        if (idx < 0) {
+            idx = 0
+        } else if (idx > 16) {
+            idx = 16
+        }
+
+        return this.getStopNames().slice(idx..16)
+    }
+
+    fun getHomeStops(start: Int = 17): List<String> {
+        var idx = start
+
+        if (idx < 17) {
+            idx = 17
+        } else if (idx > 33) {
+            idx = 33
+        }
+
+        return this.getStopNames().slice(idx..33)
+    }
+
     fun measurePathDistance(stop1: Int, stop2: Int): Double {
         var totalDistance = 0.0
         var originPointer = stop1
