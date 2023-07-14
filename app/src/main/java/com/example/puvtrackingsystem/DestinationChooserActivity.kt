@@ -27,6 +27,8 @@ class DestinationChooserActivity : AppCompatActivity() {
             DataManager.destination = Destination.TOWN
             toBoarding()
         }
+
+        DataManager.initialize(this)
     }
 
     private fun toBoarding() {
