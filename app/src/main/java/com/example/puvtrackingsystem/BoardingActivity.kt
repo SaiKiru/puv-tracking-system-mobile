@@ -80,13 +80,6 @@ class BoardingActivity : AppCompatActivity() {
             }
         }
 
-        // Attach listeners
-        DataManager.apply {
-            addListener(locationDataListener)
-            addListener(puvDataListener)
-            addListener(bufferTimeListener)
-        }
-
         boardingBtn.setOnClickListener {
             Intent(this, ArrivalActivity::class.java).also {
                 it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
@@ -96,8 +89,18 @@ class BoardingActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onResume() {
+        super.onResume()
+
+        DataManager.apply {
+            addListener(locationDataListener)
+            addListener(puvDataListener)
+            addListener(bufferTimeListener)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
 
         DataManager.apply {
             removeListener(locationDataListener)
