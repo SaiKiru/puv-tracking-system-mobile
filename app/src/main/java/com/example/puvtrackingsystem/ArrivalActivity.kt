@@ -48,6 +48,7 @@ class ArrivalActivity : AppCompatActivity() {
         etaGroup = findViewById(R.id.eta_group)
 
         puvDataKeys = intent.getIntArrayExtra("puvDataKeys")!!
+        currentPuvSelection = intent.getIntExtra("initialKey", -1)
 
         puvDataListener = object: DataManager.PUVDataListener {
             override fun run(data: Array<PUV>) {

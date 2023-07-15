@@ -105,13 +105,13 @@ class BoardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePuvData(puv: PUV) {
+    private fun updatePuvData(puv: PUV, key: Int) {
         val nearestFragment = PuvCardFragment.newInstance(puv)
 
         nearestFragment.setOnClickListener {
             Intent(this, ArrivalActivity::class.java).also {
                 it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
-                // TODO: initial PUV
+                it.putExtra("initialKey", key)
                 startActivity(it)
             }
         }
@@ -170,11 +170,13 @@ class BoardingActivity : AppCompatActivity() {
 
     private fun getNearestPuv(puvData: Array<PUV>, stopNode: Int): PUV {
         nearestPuv = puvData[0]
+        var idx = 0
         val distance = Map.measurePUVDistance(nearestPuv!!, stopNode)
         var shortestTravelTime = calculateTravelTime(distance, nearestPuv!!.speed)
 
         for (i in 1 until puvData.size) {
             val puv = puvData[i]
+            idx = i
             val distance = Map.measurePUVDistance(puv, stopNode)
             val travelTime = calculateTravelTime(distance, puv.speed)
 
@@ -184,7 +186,7 @@ class BoardingActivity : AppCompatActivity() {
             }
         }
 
-        updatePuvData(nearestPuv!!)
+        updatePuvData(nearestPuv!!, idx)
 
         return nearestPuv!!
     }
