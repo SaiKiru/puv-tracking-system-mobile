@@ -1,8 +1,10 @@
 package com.example.puvtrackingsystem
 
+import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.example.puvtrackingsystem.classes.BufferTime
@@ -27,6 +29,7 @@ class BoardingActivity : AppCompatActivity() {
 
     // Boarding a PUV View Group
     // TODO
+    private lateinit var boardingBtn: Button
 
     // Data Listeners
     private lateinit var locationDataListener: LocationDataListener
@@ -50,6 +53,7 @@ class BoardingActivity : AppCompatActivity() {
         stopNodeNameTV = findViewById(R.id.stop_node_name_tv)
         etaTextTV = findViewById(R.id.eta_text_tv)
         nearestPUVContainer = findViewById(R.id.nearest_puv_container)
+        boardingBtn = findViewById(R.id.boarding_btn)
 
         // Create data listeners
         locationDataListener = object : LocationDataListener {
@@ -81,6 +85,14 @@ class BoardingActivity : AppCompatActivity() {
             addListener(locationDataListener)
             addListener(puvDataListener)
             addListener(bufferTimeListener)
+        }
+
+        boardingBtn.setOnClickListener {
+            Intent(this, ArrivalActivity::class.java).also {
+                it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
+                // TODO: initial PUV
+                startActivity(it)
+            }
         }
     }
 
