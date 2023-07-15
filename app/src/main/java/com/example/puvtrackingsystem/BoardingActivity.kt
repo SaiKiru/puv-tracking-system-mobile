@@ -4,9 +4,12 @@ import android.content.Intent
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.Coordinates
 import com.example.puvtrackingsystem.classes.DataManager
@@ -28,8 +31,11 @@ class BoardingActivity : AppCompatActivity() {
     private lateinit var nearestPUVContainer: FrameLayout
 
     // Boarding a PUV View Group
-    // TODO
+    private lateinit var boardingGroup: ConstraintLayout
+    private lateinit var boardConfirmationTextTV: TextView
+    private lateinit var confirmationPuvContainer: FrameLayout
     private lateinit var boardingBtn: Button
+    private lateinit var ignoreBoardingBtn: Button
 
     // Data Listeners
     private lateinit var locationDataListener: LocationDataListener
@@ -53,7 +59,11 @@ class BoardingActivity : AppCompatActivity() {
         stopNodeNameTV = findViewById(R.id.stop_node_name_tv)
         etaTextTV = findViewById(R.id.eta_text_tv)
         nearestPUVContainer = findViewById(R.id.nearest_puv_container)
+        boardingGroup = findViewById(R.id.boarding_group)
+        boardConfirmationTextTV = findViewById(R.id.board_confirmation_text_tv)
+        confirmationPuvContainer = findViewById(R.id.confirmation_puv_container)
         boardingBtn = findViewById(R.id.boarding_btn)
+        ignoreBoardingBtn = findViewById(R.id.ignore_boarding_btn)
 
         // Create data listeners
         locationDataListener = object : LocationDataListener {
@@ -80,8 +90,8 @@ class BoardingActivity : AppCompatActivity() {
             }
         }
 
-        boardingBtn.setOnClickListener {
-
+        ignoreBoardingBtn.setOnClickListener {
+            boardingGroup.visibility = View.GONE
         }
     }
 
@@ -98,6 +108,8 @@ class BoardingActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
 
+        boardingGroup.visibility = View.GONE
+
         DataManager.apply {
             removeListener(locationDataListener)
             removeListener(puvDataListener)
@@ -105,19 +117,33 @@ class BoardingActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (boardingGroup.isVisible) {
+            boardingGroup.visibility = View.GONE
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun updatePuvData(puv: PUV, key: Int) {
         val nearestFragment = PuvCardFragment.newInstance(puv)
+        val confirmationFragment = PuvCardFragment.newInstance(puv)
 
         nearestFragment.setOnClickListener {
-            Intent(this, ArrivalActivity::class.java).also {
-                it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
-                it.putExtra("initialKey", key)
-                startActivity(it)
+            boardingGroup.visibility = View.VISIBLE
+
+            boardingBtn.setOnClickListener {
+                Intent(this, ArrivalActivity::class.java).also {
+                    it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
+                    it.putExtra("initialKey", key)
+                    startActivity(it)
+                }
             }
         }
 
         supportFragmentManager.beginTransaction().apply {
             replace(nearestPUVContainer.id, nearestFragment)
+            replace(confirmationPuvContainer.id, confirmationFragment)
             commit()
         }
     }
