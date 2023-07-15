@@ -67,16 +67,21 @@ object DataManager {
         bufferTimeUpdateListeners.remove(listener)
     }
 
-    fun getPuvFiltered(): IntArray {
+    fun getPuvFiltered(targetNode: Int? = null): IntArray {
         var puvs: IntArray = intArrayOf()
+        var target = targetNode
 
         if (puvData == null) return puvs
 
         puvs =
             if (destination == Destination.TOWN) {
-                filterPuvs(puvData!!, 16).toIntArray()
+                if (target == null) target = 16
+
+                filterPuvs(puvData!!, target).toIntArray()
             } else {
-                filterPuvs(puvData!!, 33).toIntArray()
+                if (target == null) target = 33
+
+                filterPuvs(puvData!!, target).toIntArray()
             }
 
         return puvs

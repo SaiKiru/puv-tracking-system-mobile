@@ -151,9 +151,10 @@ class BoardingActivity : AppCompatActivity() {
     private fun updateEtaData(puvData: Array<PUV>?, stopNode: Int? = null) {
         if (puvData == null || stopNode == null) return
 
-        // val puvs = filterPUVS(puvData, stopNode)
-        // TODO: filter PUVs based on node
-        val puvs = puvData
+        val filter = DataManager.getPuvFiltered(stopNode)
+        var puvs: Array<PUV> = arrayOf()
+
+        filter.forEach { mask -> puvs = puvs.plus(puvData[mask]) }
 
         if (puvs.isEmpty()) {
             // TODO Handle no PUVs
@@ -162,6 +163,7 @@ class BoardingActivity : AppCompatActivity() {
 
         val puv =
             if (puvs.size == 1) {
+                updatePuvData(puvs[0], stopNode)
                 puvs[0]
             } else {
                 getNearestPuv(puvs, stopNode)
@@ -222,14 +224,19 @@ class BoardingActivity : AppCompatActivity() {
     }
 
     private fun getNearestNode(location: Location): StopNode {
-        // TODO: filter the stops based on direction
+        val start =
+            if (DataManager.destination == DataManager.Destination.TOWN) {
+                0
+            } else {
+                17
+            }
 
         val currentLocation = Coordinates(location.latitude, location.longitude)
-        nearestNode = Map.routes.first()
-        nearestNodeIdx = 0
+        nearestNode = Map.routes[start]
+        nearestNodeIdx = start
         var nearestDistance = currentLocation.distanceTo(nearestNode!!.coordinates)
 
-        for (i in 1 until Map.routes.size) {
+        for (i in (start + 1) until Map.routes.size) {
             val node = Map.routes[i]
             val distance = currentLocation.distanceTo(node.coordinates)
 
