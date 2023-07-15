@@ -63,11 +63,6 @@ class ArrivalActivity : AppCompatActivity() {
             }
         }
 
-        DataManager.apply {
-            addListener(puvDataListener)
-            addListener(bufferTimeListener)
-        }
-
         puvSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 parent: AdapterView<*>?,
@@ -102,8 +97,17 @@ class ArrivalActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onResume() {
+        super.onResume()
+
+        DataManager.apply {
+            addListener(puvDataListener)
+            addListener(bufferTimeListener)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
 
         DataManager.apply {
             removeListener(puvDataListener)
@@ -112,7 +116,12 @@ class ArrivalActivity : AppCompatActivity() {
     }
 
     private fun updatePuvData(puv: PUV) {
+        val puvFragment = PuvCardFragment.newInstance(puv)
 
+        supportFragmentManager.beginTransaction().apply {
+            replace(puvContainer.id, puvFragment)
+            commit()
+        }
     }
 
     private fun updateEtaData(puv: PUV?, stopNode: Int? = null) {

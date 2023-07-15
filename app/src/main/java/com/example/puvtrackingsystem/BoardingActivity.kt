@@ -81,11 +81,7 @@ class BoardingActivity : AppCompatActivity() {
         }
 
         boardingBtn.setOnClickListener {
-            Intent(this, ArrivalActivity::class.java).also {
-                it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
-                // TODO: initial PUV
-                startActivity(it)
-            }
+
         }
     }
 
@@ -111,6 +107,14 @@ class BoardingActivity : AppCompatActivity() {
 
     private fun updatePuvData(puv: PUV) {
         val nearestFragment = PuvCardFragment.newInstance(puv)
+
+        nearestFragment.setOnClickListener {
+            Intent(this, ArrivalActivity::class.java).also {
+                it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
+                // TODO: initial PUV
+                startActivity(it)
+            }
+        }
 
         supportFragmentManager.beginTransaction().apply {
             replace(nearestPUVContainer.id, nearestFragment)
