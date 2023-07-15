@@ -136,6 +136,7 @@ class BoardingActivity : AppCompatActivity() {
                 Intent(this, ArrivalActivity::class.java).also {
                     it.putExtra("puvDataKeys", DataManager.getPuvFiltered())
                     it.putExtra("initialKey", key)
+                    it.putExtra("nearestNodeIdx", nearestNodeIdx)
                     startActivity(it)
                 }
             }
@@ -151,23 +152,17 @@ class BoardingActivity : AppCompatActivity() {
     private fun updateEtaData(puvData: Array<PUV>?, stopNode: Int? = null) {
         if (puvData == null || stopNode == null) return
 
-        val filter = DataManager.getPuvFiltered(stopNode)
+        val keys = DataManager.getPuvFiltered(stopNode)
         var puvs: Array<PUV> = arrayOf()
 
-        filter.forEach { mask -> puvs = puvs.plus(puvData[mask]) }
+        keys.forEach { key -> puvs = puvs.plus(puvData[key]) }
 
         if (puvs.isEmpty()) {
             // TODO Handle no PUVs
             return
         }
 
-        val puv =
-            if (puvs.size == 1) {
-                updatePuvData(puvs[0], stopNode)
-                puvs[0]
-            } else {
-                getNearestPuv(puvs, stopNode)
-            }
+        val puv = getNearestPuv(puvs, stopNode, keys)
 
         val bufferTime = getCurrentBufferTime()
         val distance = Map.measurePUVDistance(puv, stopNode)
@@ -196,7 +191,7 @@ class BoardingActivity : AppCompatActivity() {
         return filtered
     }
 
-    private fun getNearestPuv(puvData: Array<PUV>, stopNode: Int): PUV {
+    private fun getNearestPuv(puvData: Array<PUV>, stopNode: Int, keys: IntArray): PUV {
         nearestPuv = puvData[0]
         var idx = 0
         val distance = Map.measurePUVDistance(nearestPuv!!, stopNode)
@@ -214,7 +209,7 @@ class BoardingActivity : AppCompatActivity() {
             }
         }
 
-        updatePuvData(nearestPuv!!, idx)
+        updatePuvData(nearestPuv!!, keys[idx])
 
         return nearestPuv!!
     }

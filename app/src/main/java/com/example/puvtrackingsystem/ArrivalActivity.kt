@@ -15,6 +15,7 @@ import com.example.puvtrackingsystem.classes.Map
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import java.util.Calendar
+import kotlin.math.max
 
 class ArrivalActivity : AppCompatActivity() {
     private lateinit var puvSpinner: Spinner
@@ -35,6 +36,7 @@ class ArrivalActivity : AppCompatActivity() {
 
     // Util variables
     private lateinit var puvDataKeys: IntArray
+    private var nearestNodeIdx: Int? = null
     private var currentPuvSelection: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +50,7 @@ class ArrivalActivity : AppCompatActivity() {
         etaGroup = findViewById(R.id.eta_group)
 
         puvDataKeys = intent.getIntArrayExtra("puvDataKeys")!!
+        nearestNodeIdx = intent.getIntExtra("nearestNodeIdx", 0)
         currentPuvSelection = intent.getIntExtra("initialKey", -1)
 
         puvDataListener = object: DataManager.PUVDataListener {
@@ -77,7 +80,7 @@ class ArrivalActivity : AppCompatActivity() {
                 currentPuv = puvData!![key]
                 updatePuvData(currentPuv!!)
                 updateEtaData(currentPuv, destinationNode)
-                populateDestinationSpinner(currentPuv!!.nextStop)
+                populateDestinationSpinner(max(currentPuv!!.nextStop, nearestNodeIdx!!))
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) { }
@@ -90,8 +93,7 @@ class ArrivalActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                // TODO: offset
-                destinationNode = position
+                destinationNode = position + max(currentPuv!!.nextStop, nearestNodeIdx!!)
                 updateEtaData(currentPuv, destinationNode)
             }
 
