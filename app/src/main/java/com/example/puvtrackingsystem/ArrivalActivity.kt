@@ -35,7 +35,7 @@ class ArrivalActivity : AppCompatActivity() {
 
     // Util variables
     private lateinit var puvDataKeys: IntArray
-
+    private var currentPuvSelection: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +72,7 @@ class ArrivalActivity : AppCompatActivity() {
             ) {
                 val key = puvDataKeys[position]
 
+                currentPuvSelection = key
                 currentPuv = puvData!![key]
                 updatePuvData(currentPuv!!)
                 updateEtaData(currentPuv, destinationNode)
@@ -160,6 +161,16 @@ class ArrivalActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         puvSpinner.adapter = adapter
+
+        if (currentPuvSelection != null && dataSet.isNotEmpty()) {
+            val idx = puvKeys.indexOf(currentPuvSelection!!)
+
+            if (idx == -1) {
+                puvSpinner.setSelection(0)
+            } else {
+                puvSpinner.setSelection(idx)
+            }
+        }
     }
 
     private fun populateDestinationSpinner(initial: Int) {
