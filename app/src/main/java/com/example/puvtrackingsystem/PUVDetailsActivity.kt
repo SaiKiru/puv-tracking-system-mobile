@@ -19,6 +19,8 @@ import com.example.puvtrackingsystem.classes.Coordinates
 import com.example.puvtrackingsystem.classes.Map
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.classes.API
+import com.example.puvtrackingsystem.classes.DataManager
+import com.example.puvtrackingsystem.classes.DataManager.Destination
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import com.example.puvtrackingsystem.utils.isLocationEnabled
 import com.example.puvtrackingsystem.utils.requestEnableLocation
@@ -67,13 +69,21 @@ class PUVDetailsActivity : AppCompatActivity() {
             fromSpinner.adapter = it
         }
 
-        ArrayAdapter.createFromResource(
-            this,
-            R.array.stop_nodes,
-            android.R.layout.simple_spinner_item
-        ).also {
-            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            destinationSpinner.adapter = it
+//        ArrayAdapter.createFromResource(
+//            this,
+//            R.array.stop_nodes,
+//            android.R.layout.simple_spinner_item
+//        ).also {
+//            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//            destinationSpinner.adapter = it
+//        }
+
+        if (DataManager.destination == Destination.HOME) {
+            val destinationList = Map.getHomeStops()
+            updateDestinationSpinner(destinationList)
+        } else if (DataManager.destination == Destination.TOWN) {
+            val destinationList = Map.getTownStops()
+            updateDestinationSpinner(destinationList)
         }
 
         fromSpinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener {
@@ -243,5 +253,32 @@ class PUVDetailsActivity : AppCompatActivity() {
         Toast
             .makeText(this, "Could not connect to the internet.", Toast.LENGTH_LONG)
             .show()
+    }
+
+    private fun updateDestinationSpinner(list: List<String>) {
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, list)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        destinationSpinner.adapter = adapter
+    }
+
+    /**
+     * Removes PUVs that are not currently going to user's location
+     * @param puvs The PUV list to filter
+     * @param stopNode The user's location
+     * @return The list of PUVs that can go to user's location
+     */
+    private fun filterPUVS(puvs: Array<PUV>, stopNode: Int): List<PUV> {
+        val filtered: List<PUV> = listOf()
+
+        puvs.forEach { puv ->
+            if (stopNode <= 16 && puv.nextStop <= stopNode) { // To Town
+                filtered.plus(puv)
+            } else if (stopNode <= 33 && puv.nextStop <= stopNode) { // To Home
+                filtered.plus(puv)
+            }
+        }
+
+        return filtered
     }
 }
