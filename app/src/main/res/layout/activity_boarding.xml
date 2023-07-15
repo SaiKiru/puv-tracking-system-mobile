@@ -43,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="Loading..."
                 android:textAlignment="center"
+                android:textColor="#444"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 tools:text="Ambiong" />
@@ -75,6 +76,7 @@
                 android:layout_height="wrap_content"
                 android:text="Loading..."
                 android:textAlignment="center"
+                android:textColor="@color/purple_500"
                 android:textSize="34sp"
                 android:textStyle="bold"
                 tools:text="05:00" />
@@ -102,8 +104,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/board_confirmation_text_tv"
