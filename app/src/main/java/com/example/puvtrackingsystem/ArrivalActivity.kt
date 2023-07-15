@@ -38,6 +38,7 @@ class ArrivalActivity : AppCompatActivity() {
     private lateinit var puvDataKeys: IntArray
     private var nearestNodeIdx: Int? = null
     private var currentPuvSelection: Int? = null
+    private var currentDestinationSelection: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,15 @@ class ArrivalActivity : AppCompatActivity() {
         puvDataListener = object: DataManager.PUVDataListener {
             override fun run(data: Array<PUV>) {
                 puvData = data
+
+                if (currentPuv == null) {
+                    currentPuv = DataManager.puvData?.get(currentPuvSelection!!)
+                } else if (currentPuvSelection != null) {
+                    currentPuv = data[currentPuvSelection!!]
+                }
+
+                puvDataKeys = DataManager.getPuvFiltered(max(currentPuv!!.nextStop, nearestNodeIdx!!))
+
                 populatePuvSpinner(puvDataKeys)
             }
         }
@@ -94,6 +104,7 @@ class ArrivalActivity : AppCompatActivity() {
                 id: Long
             ) {
                 destinationNode = position + max(currentPuv!!.nextStop, nearestNodeIdx!!)
+                currentDestinationSelection = destinationNode
                 updateEtaData(currentPuv, destinationNode)
             }
 
@@ -188,5 +199,11 @@ class ArrivalActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         destinationSpinner.adapter = adapter
+
+        if (currentDestinationSelection != null) {
+            val idx = currentDestinationSelection!! - max(currentPuv!!.nextStop, nearestNodeIdx!!)
+
+            destinationSpinner.setSelection(idx)
+        }
     }
 }
