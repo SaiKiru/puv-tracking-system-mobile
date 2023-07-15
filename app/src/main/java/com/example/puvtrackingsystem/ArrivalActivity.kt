@@ -146,7 +146,11 @@ class ArrivalActivity : AppCompatActivity() {
         val distance = Map.measurePUVDistance(puv, stopNode)
         val eta = calculateTravelTime(distance, puv.speed) + bufferTime.value * 0.1
 
-        etaTextTV.text = "${(eta * 60).toInt()} minutes"
+        if (eta == Double.POSITIVE_INFINITY) {
+            etaTextTV.text = "---"
+        } else {
+            etaTextTV.text = "${(eta * 60).toInt()} minutes"
+        }
     }
 
     private fun updateBufferTimes(data: Array<BufferTime>) {
