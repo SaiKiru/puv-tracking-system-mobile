@@ -1,6 +1,7 @@
 package com.example.puvtrackingsystem.classes
 
 import com.example.puvtrackingsystem.utils.calculateTravelTime
+import java.io.Serializable
 import java.util.Calendar
 import java.util.Date
 
@@ -17,7 +18,7 @@ class PUV(
     val passengersOnboard: Int,
     val nextStop: Int = 1,
     val node: String = "",
-) {
+) : Serializable {
     var coordinates: Coordinates
     var dateTime: Date
     var nextIdx = nextStop - 1

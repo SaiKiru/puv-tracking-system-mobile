@@ -2,11 +2,12 @@ package com.example.puvtrackingsystem.classes
 
 import com.example.puvtrackingsystem.utils.calculateDistance
 import com.example.puvtrackingsystem.utils.calculateTravelTime
+import java.io.Serializable
 
 class Coordinates(
     val latitude: Double,
     val longitude: Double
-) {
+) : Serializable {
 
     /**
      * Measures the distance from this coordinate to another
