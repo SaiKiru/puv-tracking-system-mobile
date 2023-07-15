@@ -67,6 +67,40 @@ object DataManager {
         bufferTimeUpdateListeners.remove(listener)
     }
 
+    fun getPuvFiltered(): IntArray {
+        var puvs: IntArray = intArrayOf()
+
+        if (puvData == null) return puvs
+
+        puvs =
+            if (destination == Destination.TOWN) {
+                filterPuvs(puvData!!, 16).toIntArray()
+            } else {
+                filterPuvs(puvData!!, 33).toIntArray()
+            }
+
+        return puvs
+    }
+
+    private fun filterPuvs(puvs: Array<PUV>, stopNode: Int): Array<Int> {
+        var filtered: Array<Int> = arrayOf()
+
+        puvs.forEachIndexed { idx, puv,  ->
+            if (stopNode <= 16
+                && puv.nextStop <= stopNode
+            ) { // To Town
+                filtered = filtered.plus(idx)
+            } else if (stopNode <= 33
+                && puv.nextStop <= stopNode
+                && puv.nextStop > 16
+            ) { // To Home
+                filtered = filtered.plus(idx)
+            }
+        }
+
+        return filtered
+    }
+
     private fun getLocation(context: Context, locationClient: FusedLocationProviderClient) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
