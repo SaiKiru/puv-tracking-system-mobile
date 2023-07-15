@@ -62,21 +62,21 @@ class BoardingActivity : AppCompatActivity() {
                 if (data != null) {
                     nearestNode = getNearestNode(data)
                     updateNearestNode(nearestNode!!)
-                    updatePuvData(puvData, nearestNodeIdx)
+                    updateEtaData(puvData, nearestNodeIdx)
                 }
             }
         }
 
         puvDataListener = object : PUVDataListener {
             override fun run(data: Array<PUV>) {
-                updatePuvData(data, nearestNodeIdx)
+                updateEtaData(data, nearestNodeIdx)
             }
         }
 
         bufferTimeListener = object : BufferTimeListener {
             override fun run(data: Array<BufferTime>) {
                 updateBufferTimes(data)
-                updatePuvData(puvData, nearestNodeIdx)
+                updateEtaData(puvData, nearestNodeIdx)
             }
         }
 
@@ -106,7 +106,16 @@ class BoardingActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePuvData(puvData: Array<PUV>?, stopNode: Int? = null) {
+    private fun updatePuvData(puv: PUV) {
+        val nearestFragment = PuvCardFragment.newInstance(puv)
+
+        supportFragmentManager.beginTransaction().apply {
+            replace(nearestPUVContainer.id, nearestFragment)
+            commit()
+        }
+    }
+
+    private fun updateEtaData(puvData: Array<PUV>?, stopNode: Int? = null) {
         if (puvData == null || stopNode == null) return
 
         // val puvs = filterPUVS(puvData, stopNode)
@@ -167,6 +176,8 @@ class BoardingActivity : AppCompatActivity() {
                 shortestTravelTime = travelTime
             }
         }
+
+        updatePuvData(nearestPuv!!)
 
         return nearestPuv!!
     }
