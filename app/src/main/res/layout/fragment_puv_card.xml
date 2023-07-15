@@ -9,13 +9,52 @@
     android:padding="16dp"
     tools:context=".PuvCardFragment">
 
+    <TextView
+        android:id="@+id/next_stop_text_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Next stop in: 2 minutes" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:progressTint="@color/purple_500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/next_stop_text_tv" />
+
+    <TextView
+        android:id="@+id/from_node_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar"
+        tools:text="Stop Node A" />
+
+    <TextView
+        android:id="@+id/to_node_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar"
+        tools:text="Stop Node B" />
+
     <ImageView
         android:id="@+id/speed_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:src="@drawable/ic_speedometer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/from_node_tv"
         app:tint="#888" />
 
     <TextView
@@ -24,6 +63,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textColor="#444"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/speed_icon"
         app:layout_constraintStart_toEndOf="@+id/speed_icon"
@@ -34,7 +74,7 @@
         android:id="@+id/passenger_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:src="@drawable/ic_person"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/speed_icon"
@@ -46,6 +86,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textColor="#444"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/passenger_icon"
         app:layout_constraintStart_toEndOf="@+id/passenger_icon"

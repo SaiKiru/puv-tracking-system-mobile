@@ -66,12 +66,26 @@ class PUV(
     }
 
     fun getNextNode(): StopNode {
-        return Map.routes[nextIdx]
+        return Map.routes[nextStop - 1]
     }
 
     fun getTimeToNextNode(): Double {
-        val distance = Map.measurePUVDistance(this, nextIdx)
+        val distance = Map.measurePUVDistance(this, nextStop - 1)
 
         return calculateTravelTime(distance, this.speed)
+    }
+
+    fun getRatioTraveled(): Double {
+        val from = this.getLastNode()
+        val to = this.getNextNode()
+
+        val fullDistance = from.coordinates.distanceTo(to.coordinates)
+        val traveled = from.coordinates.distanceTo(this.coordinates)
+
+        var ratio = traveled / fullDistance
+
+        if (ratio > 1) ratio = 1.0
+
+        return ratio
     }
 }

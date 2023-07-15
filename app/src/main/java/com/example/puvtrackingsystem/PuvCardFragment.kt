@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.puvtrackingsystem.classes.PUV
 
@@ -30,7 +31,23 @@ class PuvCardFragment : Fragment() {
 
         val speedTextTV: TextView = view.findViewById(R.id.speed_text_tv)
         val passengerTextTV: TextView = view.findViewById(R.id.passenger_text_tv)
+        val nextStopTextTV: TextView = view.findViewById(R.id.next_stop_text_tv)
+        val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
+        val fromNodeTV: TextView = view.findViewById(R.id.from_node_tv)
+        val toNodeTV: TextView = view.findViewById(R.id.to_node_tv)
 
+        // TODO: buffer time
+        val eta = puv!!.getTimeToNextNode()
+
+        if (eta == Double.POSITIVE_INFINITY) {
+            nextStopTextTV.text = "Next stop in: ---"
+        } else {
+            nextStopTextTV.text = "Next stop in: ${(eta * 60).toInt()} minutes"
+        }
+
+        progressBar.progress = (puv!!.getRatioTraveled() * 100).toInt()
+        fromNodeTV.text = puv!!.getLastNode().name
+        toNodeTV.text = puv!!.getNextNode().name
         speedTextTV.text = "${puv!!.speed} kph"
         passengerTextTV.text = "${puv!!.passengersOnboard} passengers"
 
