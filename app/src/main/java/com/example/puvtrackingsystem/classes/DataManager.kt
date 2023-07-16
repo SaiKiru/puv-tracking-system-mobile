@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Handler
 import android.os.Looper
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.puvtrackingsystem.utils.isLocationEnabled
 import com.example.puvtrackingsystem.utils.requestEnableLocation
@@ -26,6 +27,8 @@ object DataManager {
     private val locationUpdateListeners: MutableList<LocationDataListener> = arrayListOf()
     private val puvDataUpdateListeners: MutableList<PUVDataListener> = arrayListOf()
     private val bufferTimeUpdateListeners: MutableList<BufferTimeListener> = arrayListOf()
+
+    var toastNetworkErrorShown = false
 
     fun initialize(context: Context) {
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
@@ -131,7 +134,7 @@ object DataManager {
             }
     }
 
-    private fun getPUVData() {
+    private fun getPUVData(context: Context, handler: Handler, task: Runnable) {
         API.getPUVSummary(
             callback = { response ->
                 val data = Gson().fromJson(response, Array<PUV>::class.java)
@@ -139,11 +142,26 @@ object DataManager {
 
                 puvDataUpdateListeners.forEach { listener -> listener.run(data) }
             },
-            errorHandler = {}
+            errorHandler = {
+                if (!toastNetworkErrorShown) {
+                    Toast
+                        .makeText(context, "Could not get data. Are you connected to the internet?", Toast.LENGTH_LONG)
+                        .show()
+
+                    toastNetworkErrorShown = true
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        toastNetworkErrorShown = false
+                    }, 3500)
+                }
+
+                handler.removeCallbacks(task)
+                handler.post(task)
+            }
         )
     }
 
-    private fun getBufferTimes() {
+    private fun getBufferTimes(context: Context, handler: Handler, task: Runnable) {
         API.getBufferTimes(
             callback = { response ->
                 val data = Gson().fromJson(response, Array<BufferTime>::class.java)
@@ -151,7 +169,22 @@ object DataManager {
 
                 bufferTimeUpdateListeners.forEach { listener -> listener.run(data) }
             },
-            errorHandler = {}
+            errorHandler = {
+                if (!toastNetworkErrorShown) {
+                    Toast
+                        .makeText(context, "Could not get data. Are you connected to the internet?", Toast.LENGTH_LONG)
+                        .show()
+
+                    toastNetworkErrorShown = true
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        toastNetworkErrorShown = false
+                    }, 3500)
+                }
+
+                handler.removeCallbacks(task)
+                handler.post(task)
+            }
         )
     }
 
@@ -179,8 +212,8 @@ object DataManager {
     private object Scheduler {
         fun run(context: Context, locationClient: FusedLocationProviderClient) {
             scheduleLocationUpdates(3_000, context, locationClient)
-            schedulePUVUpdates(1_000 * 20)
-            scheduleBufferTimeUpdates(1_000 * 60 * 10)
+            schedulePUVUpdates(1_000 * 20, context)
+            scheduleBufferTimeUpdates(1_000 * 60 * 10, context)
         }
 
         fun scheduleLocationUpdates(time: Long, context: Context, locationClient: FusedLocationProviderClient) {
@@ -195,11 +228,11 @@ object DataManager {
             handler.post(runnable)
         }
 
-        fun schedulePUVUpdates(time: Long) {
+        fun schedulePUVUpdates(time: Long, context: Context) {
             val handler = Handler(Looper.getMainLooper())
             val runnable = object: Runnable {
                 override fun run() {
-                    getPUVData()
+                    getPUVData(context, handler, this)
                     handler.postDelayed(this, time)
                 }
             }
@@ -207,11 +240,11 @@ object DataManager {
             handler.post(runnable)
         }
 
-        fun scheduleBufferTimeUpdates(time: Long) {
+        fun scheduleBufferTimeUpdates(time: Long, context: Context) {
             val handler = Handler(Looper.getMainLooper())
             val runnable = object: Runnable {
                 override fun run() {
-                    getBufferTimes()
+                    getBufferTimes(context, handler, this)
                     handler.postDelayed(this, time)
                 }
             }
