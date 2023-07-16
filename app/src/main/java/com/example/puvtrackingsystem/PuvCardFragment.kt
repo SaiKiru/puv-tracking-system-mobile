@@ -29,7 +29,6 @@ class PuvCardFragment : Fragment() {
     ): View? {
         view = inflater.inflate(R.layout.fragment_puv_card, container, false)
 
-        val speedTextTV: TextView = view.findViewById(R.id.speed_text_tv)
         val passengerTextTV: TextView = view.findViewById(R.id.passenger_text_tv)
         val nextStopTextTV: TextView = view.findViewById(R.id.next_stop_text_tv)
         val progressBar: ProgressBar = view.findViewById(R.id.progress_bar)
@@ -48,7 +47,6 @@ class PuvCardFragment : Fragment() {
         progressBar.progress = (puv!!.getRatioTraveled() * 100).toInt()
         fromNodeTV.text = puv!!.getLastNode().name
         toNodeTV.text = puv!!.getNextNode().name
-        speedTextTV.text = "${puv!!.speed} kph"
         passengerTextTV.text = "${puv!!.passengersOnboard} passengers"
 
         view.setOnClickListener { listener?.onClick(view) }

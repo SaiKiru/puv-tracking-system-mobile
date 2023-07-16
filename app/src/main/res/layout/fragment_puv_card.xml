@@ -48,36 +48,13 @@
         tools:text="Stop Node B" />
 
     <ImageView
-        android:id="@+id/speed_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_speedometer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/from_node_tv"
-        app:tint="#888" />
-
-    <TextView
-        android:id="@+id/speed_text_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textColor="#444"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/speed_icon"
-        app:layout_constraintStart_toEndOf="@+id/speed_icon"
-        app:layout_constraintTop_toTopOf="@+id/speed_icon"
-        tools:text="6.9 kph" />
-
-    <ImageView
         android:id="@+id/passenger_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:src="@drawable/ic_person"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/speed_icon"
+        app:layout_constraintTop_toBottomOf="@+id/from_node_tv"
         app:tint="#888" />
 
     <TextView
