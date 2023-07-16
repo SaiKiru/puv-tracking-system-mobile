@@ -7,13 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.example.puvtrackingsystem.classes.BufferTime
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.classes.TimeFormatter
 
 private const val ARG_PUV = "puv"
+private const val ARG_BUFFER = "bufferTime"
 
 class PuvCardFragment : Fragment() {
     private var puv: PUV? = null
+    private var bufferTime: BufferTime? = null
     private lateinit var view: View
     private var listener: View.OnClickListener? = null
 
@@ -21,6 +24,7 @@ class PuvCardFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             puv = it.getSerializable(ARG_PUV) as PUV
+            bufferTime = it.getSerializable(ARG_BUFFER) as BufferTime
         }
     }
 
@@ -36,8 +40,7 @@ class PuvCardFragment : Fragment() {
         val fromNodeTV: TextView = view.findViewById(R.id.from_node_tv)
         val toNodeTV: TextView = view.findViewById(R.id.to_node_tv)
 
-        // TODO: buffer time
-        val eta = puv!!.getTimeToNextNode()
+        val eta = puv!!.getTimeToNextNode() + bufferTime!!.value * 0.1
 
         if (eta == Double.POSITIVE_INFINITY) {
             nextStopTextTV.text = "Next stop in: ---"
@@ -67,10 +70,11 @@ class PuvCardFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(puv: PUV) =
+        fun newInstance(puv: PUV, bufferTime: BufferTime) =
             PuvCardFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(ARG_PUV, puv)
+                    putSerializable(ARG_BUFFER, bufferTime)
                 }
             }
     }

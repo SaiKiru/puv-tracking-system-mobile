@@ -132,7 +132,8 @@ class ArrivalActivity : AppCompatActivity() {
     }
 
     private fun updatePuvData(puv: PUV) {
-        val puvFragment = PuvCardFragment.newInstance(puv)
+        val bufferTime = getCurrentBufferTime()
+        val puvFragment = PuvCardFragment.newInstance(puv, bufferTime)
 
         supportFragmentManager.beginTransaction().apply {
             replace(puvContainer.id, puvFragment)
