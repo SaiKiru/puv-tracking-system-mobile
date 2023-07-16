@@ -2,6 +2,7 @@ package com.example.puvtrackingsystem.classes
 
 object Map {
     val routes: Array<StopNode> = arrayOf(
+        // To Town
         StopNode("Evangelista", 16.42730419726418, 120.60562532421416),
         StopNode("Police Station", 16.426246716296536, 120.60654339150264),
         StopNode("Eskwelahan", 16.424986676282977, 120.6053877325859),
@@ -19,6 +20,8 @@ object Map {
         StopNode("City High", 16.407835419617587, 120.59786480716929),
         StopNode("UC SM", 16.408773630744776, 120.59825567081572),
         StopNode("SM Main", 16.4089740109058, 120.59997217194783),
+
+        // To Aurora Hill
         StopNode("UC Overpass", 16.407807928851266, 120.59798539063031),
         StopNode("Patriotic", 16.411394005391358, 120.59693782480694),
         StopNode("Tiongsan", 16.41337574854675, 120.59526819443082),

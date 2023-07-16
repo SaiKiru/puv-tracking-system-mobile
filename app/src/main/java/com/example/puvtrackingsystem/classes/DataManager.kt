@@ -7,6 +7,8 @@ import android.location.Location
 import android.os.Handler
 import android.os.Looper
 import androidx.core.app.ActivityCompat
+import com.example.puvtrackingsystem.utils.isLocationEnabled
+import com.example.puvtrackingsystem.utils.requestEnableLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -107,9 +109,16 @@ object DataManager {
     }
 
     private fun getLocation(context: Context, locationClient: FusedLocationProviderClient) {
+        if (!isLocationEnabled(context)) {
+            requestEnableLocation(context)
+            return
+        }
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        ) return
+        ) {
+            return
+        }
 
         locationClient
             .getCurrentLocation(LocationRequest.PRIORITY_HIGH_ACCURACY, object : CancellationToken() {
