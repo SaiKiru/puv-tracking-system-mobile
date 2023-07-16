@@ -230,19 +230,23 @@ class BoardingActivity : AppCompatActivity() {
     }
 
     private fun getNearestNode(location: Location): StopNode {
-        val start =
-            if (DataManager.destination == DataManager.Destination.TOWN) {
-                0
-            } else {
-                17
-            }
+        val start: Int
+        val end: Int
+
+        if (DataManager.destination == DataManager.Destination.TOWN) {
+            start = 0
+            end = 16
+        } else {
+            start = 17
+            end = 33
+        }
 
         val currentLocation = Coordinates(location.latitude, location.longitude)
         nearestNode = Map.routes[start]
         nearestNodeIdx = start
         var nearestDistance = currentLocation.distanceTo(nearestNode!!.coordinates)
 
-        for (i in (start + 1) until Map.routes.size) {
+        for (i in (start + 1)..end) {
             val node = Map.routes[i]
             val distance = currentLocation.distanceTo(node.coordinates)
 
