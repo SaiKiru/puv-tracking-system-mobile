@@ -48,9 +48,13 @@ class PuvCardFragment : Fragment() {
         }
 
         progressBar.progress = (puv!!.getRatioTraveled() * 100).toInt()
-        fromNodeTV.text = puv!!.getLastNode().name
-        toNodeTV.text = puv!!.getNextNode().name
-        passengerTextTV.text = "${puv!!.passengersOnboard} passengers"
+        fromNodeTV.text = "From: ${puv!!.getLastNode().name}"
+        toNodeTV.text = "To: ${puv!!.getNextNode().name}"
+
+        var passengersText = "${puv!!.passengersOnboard} passenger"
+        if (puv!!.passengersOnboard > 1) passengersText += "s"
+
+        passengerTextTV.text = passengersText
 
         view.setOnClickListener { listener?.onClick(view) }
 
