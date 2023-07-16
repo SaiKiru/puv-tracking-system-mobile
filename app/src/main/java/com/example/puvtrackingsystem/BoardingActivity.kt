@@ -19,6 +19,7 @@ import com.example.puvtrackingsystem.classes.DataManager.BufferTimeListener
 import com.example.puvtrackingsystem.classes.Map
 import com.example.puvtrackingsystem.classes.PUV
 import com.example.puvtrackingsystem.classes.StopNode
+import com.example.puvtrackingsystem.classes.TimeFormatter
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import java.util.Calendar
 
@@ -171,7 +172,9 @@ class BoardingActivity : AppCompatActivity() {
         if (eta == Double.POSITIVE_INFINITY) {
             etaTextTV.text = "---"
         } else {
-            etaTextTV.text = "${(eta * 60).toInt()} minutes"
+            val time = TimeFormatter(eta)
+
+            etaTextTV.text = time.getFormattedTime()
         }
     }
 

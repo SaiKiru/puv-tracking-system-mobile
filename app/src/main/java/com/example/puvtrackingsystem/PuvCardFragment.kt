@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.example.puvtrackingsystem.classes.PUV
+import com.example.puvtrackingsystem.classes.TimeFormatter
 
 private const val ARG_PUV = "puv"
 
@@ -41,7 +42,9 @@ class PuvCardFragment : Fragment() {
         if (eta == Double.POSITIVE_INFINITY) {
             nextStopTextTV.text = "Next stop in: ---"
         } else {
-            nextStopTextTV.text = "Next stop in: ${(eta * 60).toInt()} minutes"
+            val time = TimeFormatter(eta)
+
+            nextStopTextTV.text = "Next stop in: ${time.getFormattedTime()}"
         }
 
         progressBar.progress = (puv!!.getRatioTraveled() * 100).toInt()
