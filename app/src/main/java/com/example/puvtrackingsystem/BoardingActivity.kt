@@ -163,7 +163,19 @@ class BoardingActivity : AppCompatActivity() {
         keys.forEach { key -> puvs = puvs.plus(puvData[key]) }
 
         if (puvs.isEmpty()) {
-            // TODO Handle no PUVs
+            etaTextTV.text = "---"
+
+            val nearestFragment = supportFragmentManager.findFragmentById(R.id.nearest_puv_container)
+            val confirmationFragment = supportFragmentManager.findFragmentById(R.id.confirmation_puv_container)
+            supportFragmentManager.beginTransaction().apply {
+                if (nearestFragment != null) {
+                    remove(nearestFragment)
+                }
+                if (confirmationFragment != null) {
+                    remove(confirmationFragment)
+                }
+                commit()
+            }
             return
         }
 
