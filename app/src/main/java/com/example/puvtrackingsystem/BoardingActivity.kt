@@ -99,6 +99,8 @@ class BoardingActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        boardingGroup.visibility = View.GONE
+
         DataManager.apply {
             addListener(locationDataListener)
             addListener(puvDataListener)
@@ -108,8 +110,6 @@ class BoardingActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-
-        boardingGroup.visibility = View.GONE
 
         DataManager.apply {
             removeListener(locationDataListener)
