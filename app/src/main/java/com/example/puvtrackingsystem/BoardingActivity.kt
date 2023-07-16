@@ -155,6 +155,8 @@ class BoardingActivity : AppCompatActivity() {
     private fun updateEtaData(puvData: Array<PUV>?, stopNode: Int? = null) {
         if (puvData == null || stopNode == null) return
 
+        this.puvData = puvData
+
         val keys = DataManager.getPuvFiltered(stopNode)
         var puvs: Array<PUV> = arrayOf()
 
