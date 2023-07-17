@@ -1,5 +1,6 @@
 package com.example.puvtrackingsystem.classes
 
+import android.util.Log
 import com.example.puvtrackingsystem.utils.calculateTravelTime
 import java.io.Serializable
 import java.util.Calendar
@@ -79,8 +80,10 @@ class PUV(
         val from = this.getLastNode()
         val to = this.getNextNode()
 
-        val fullDistance = from.coordinates.distanceTo(to.coordinates)
-        val traveled = from.coordinates.distanceTo(this.coordinates)
+        val distanceFrom = this.coordinates.distanceTo(from.coordinates)
+        val distanceTo = this.coordinates.distanceTo(to.coordinates)
+        val fullDistance = distanceFrom + distanceTo
+        val traveled = distanceFrom
 
         var ratio = traveled / fullDistance
 
