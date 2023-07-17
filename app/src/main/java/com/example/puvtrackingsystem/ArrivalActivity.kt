@@ -65,7 +65,7 @@ class ArrivalActivity : AppCompatActivity() {
                     currentPuv = data[currentPuvSelection!!]
                 }
 
-                puvDataKeys = DataManager.getPuvFiltered(max(currentPuv!!.nextStop, nearestNodeIdx!!))
+                puvDataKeys = DataManager.getPuvFiltered(max(currentPuv!!.nextStop - 1, nearestNodeIdx!!))
 
                 populatePuvSpinner(puvDataKeys)
             }
@@ -91,7 +91,7 @@ class ArrivalActivity : AppCompatActivity() {
                 currentPuv = puvData!![key]
                 updatePuvData(currentPuv!!)
                 updateEtaData(currentPuv, destinationNode)
-                populateDestinationSpinner(max(currentPuv!!.nextStop, nearestNodeIdx!!))
+                populateDestinationSpinner(max(currentPuv!!.nextStop - 1, nearestNodeIdx!!))
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) { }
@@ -104,7 +104,7 @@ class ArrivalActivity : AppCompatActivity() {
                 position: Int,
                 id: Long
             ) {
-                destinationNode = position + max(currentPuv!!.nextStop, nearestNodeIdx!!)
+                destinationNode = position + max(currentPuv!!.nextStop - 1, nearestNodeIdx!!)
                 currentDestinationSelection = destinationNode
                 updateEtaData(currentPuv, destinationNode)
             }
@@ -209,7 +209,7 @@ class ArrivalActivity : AppCompatActivity() {
         destinationSpinner.adapter = adapter
 
         if (currentDestinationSelection != null) {
-            val idx = currentDestinationSelection!! - max(currentPuv!!.nextStop, nearestNodeIdx!!)
+            val idx = currentDestinationSelection!! - max(currentPuv!!.nextStop - 1, nearestNodeIdx!!)
 
             destinationSpinner.setSelection(idx)
         }

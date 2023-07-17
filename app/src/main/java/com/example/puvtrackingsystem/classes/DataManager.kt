@@ -97,12 +97,12 @@ object DataManager {
 
         puvs.forEachIndexed { idx, puv,  ->
             if (stopNode <= 16
-                && puv.nextStop <= stopNode
+                && puv.nextStop - 1 <= stopNode
             ) { // To Town
                 filtered = filtered.plus(idx)
             } else if (stopNode <= 33
-                && puv.nextStop <= stopNode
-                && puv.nextStop > 16
+                && puv.nextStop - 1 <= stopNode
+                && puv.nextStop - 1 > 16
             ) { // To Home
                 filtered = filtered.plus(idx)
             }
