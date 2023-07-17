@@ -222,11 +222,11 @@ class BoardingActivity : AppCompatActivity() {
 
         for (i in 1 until puvData.size) {
             val puv = puvData[i]
-            idx = i
             val distance = Map.measurePUVDistance(puv, stopNode)
             val travelTime = calculateTravelTime(distance, puv.speed)
 
             if (travelTime < shortestTravelTime) {
+                idx = i
                 nearestPuv = puv
                 shortestTravelTime = travelTime
             }
