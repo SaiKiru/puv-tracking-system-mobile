@@ -3,7 +3,7 @@ package com.example.puvtrackingsystem.classes
 import HttpGetRequestAsyncTask
 
 object API {
-    val BASE_URL = "https://script.google.com/macros/s/AKfycbziAMj5DxTcVB0FJyDjePXAawScbMYNM9UBXe5qA4ugWcWRtjrrToA375ljOxirgp7_/exec"
+    val BASE_URL = "https://script.google.com/macros/s/AKfycbz3k6LYUMBQmJ_GxXkkoCMIgj2PE0qSp8YvueVhitcl54inM6E90KEqKspib-24jZkX/exec"
 
     fun getAllPUVData(
         callback: ((String) -> Unit)? = null,
