@@ -146,7 +146,7 @@ class ArrivalActivity : AppCompatActivity() {
 
         val bufferTime = getCurrentBufferTime()
         val distance = Map.measurePUVDistance(puv, stopNode)
-        val eta = calculateTravelTime(distance, puv.speed) + bufferTime.value * 0.1
+        val eta = calculateTravelTime(distance, puv.speed) + bufferTime.value * 0.4
 
         if (eta == Double.POSITIVE_INFINITY) {
             etaTextTV.text = "---"
