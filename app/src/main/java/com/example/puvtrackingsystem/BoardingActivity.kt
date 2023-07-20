@@ -183,7 +183,7 @@ class BoardingActivity : AppCompatActivity() {
 
         val bufferTime = getCurrentBufferTime()
         val distance = Map.measurePUVDistance(puv, stopNode)
-        val eta = calculateTravelTime(distance, puv.speed) + bufferTime.value * 0.4
+        val eta = calculateTravelTime(distance, puv.speed) + bufferTime.value * 0.4 + (20 / 3600.0)
 
         if (eta == Double.POSITIVE_INFINITY) {
             etaTextTV.text = "---"

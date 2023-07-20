@@ -40,7 +40,7 @@ class PuvCardFragment : Fragment() {
         val fromNodeTV: TextView = view.findViewById(R.id.from_node_tv)
         val toNodeTV: TextView = view.findViewById(R.id.to_node_tv)
 
-        val eta = puv!!.getTimeToNextNode() + bufferTime!!.value * 0.4
+        val eta = puv!!.getTimeToNextNode() + bufferTime!!.value * 0.4 + (20 / 3600.0)
 
         if (eta == Double.POSITIVE_INFINITY) {
             nextStopTextTV.text = "Next stop in: ---"
