@@ -217,18 +217,16 @@ class BoardingActivity : AppCompatActivity() {
     private fun getNearestPuv(puvData: Array<PUV>, stopNode: Int, keys: IntArray): PUV {
         nearestPuv = puvData[0]
         var idx = 0
-        val distance = Map.measurePUVDistance(nearestPuv!!, stopNode)
-        var shortestTravelTime = calculateTravelTime(distance, nearestPuv!!.speed)
+        var shortestDistance = Map.measurePUVDistance(nearestPuv!!, stopNode)
 
         for (i in 1 until puvData.size) {
             val puv = puvData[i]
             val distance = Map.measurePUVDistance(puv, stopNode)
-            val travelTime = calculateTravelTime(distance, puv.speed)
 
-            if (travelTime < shortestTravelTime) {
+            if (distance < shortestDistance) {
                 idx = i
                 nearestPuv = puv
-                shortestTravelTime = travelTime
+                shortestDistance = distance
             }
         }
 
