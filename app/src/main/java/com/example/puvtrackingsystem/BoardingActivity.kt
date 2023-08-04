@@ -129,8 +129,8 @@ class BoardingActivity : AppCompatActivity() {
     private fun updatePuvData(puv: PUV, key: Int) {
         val bufferTime = getCurrentBufferTime()
 
-        val nearestFragment = PuvCardFragment.newInstance(puv, bufferTime)
-        val confirmationFragment = PuvCardFragment.newInstance(puv, bufferTime)
+        val nearestFragment = PuvCardFragment.newInstance(puv, bufferTime, key + 1)
+        val confirmationFragment = PuvCardFragment.newInstance(puv, bufferTime, key + 1)
 
         nearestFragment.setOnClickListener {
             boardingGroup.visibility = View.VISIBLE

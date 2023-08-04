@@ -89,7 +89,7 @@ class ArrivalActivity : AppCompatActivity() {
 
                 currentPuvSelection = key
                 currentPuv = puvData!![key]
-                updatePuvData(currentPuv!!)
+                updatePuvData(currentPuv!!, key + 1)
                 updateEtaData(currentPuv, destinationNode)
                 populateDestinationSpinner(max(currentPuv!!.nextStop - 1, nearestNodeIdx!!))
             }
@@ -131,9 +131,9 @@ class ArrivalActivity : AppCompatActivity() {
         }
     }
 
-    private fun updatePuvData(puv: PUV) {
+    private fun updatePuvData(puv: PUV, puvId: Int) {
         val bufferTime = getCurrentBufferTime()
-        val puvFragment = PuvCardFragment.newInstance(puv, bufferTime)
+        val puvFragment = PuvCardFragment.newInstance(puv, bufferTime, puvId)
 
         supportFragmentManager.beginTransaction().apply {
             replace(puvContainer.id, puvFragment)
